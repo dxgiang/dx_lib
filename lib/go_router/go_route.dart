@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_router_example/feature/error_screen/error_screen.dart';
-import 'package:go_router_example/feature/home_page_screen.dart';
+import 'package:go_router_example/feature/home_page.dart';
 import 'package:go_router_example/feature/my_activity/detail_activty/detail_activty_page.dart';
 import 'package:go_router_example/feature/setting/change_theme/change_theme_mode_page.dart';
 import 'package:go_router_example/feature/setting/user/user_detail_info.dart';
