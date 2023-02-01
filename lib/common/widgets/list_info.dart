@@ -5,7 +5,7 @@ class ListInfo extends StatelessWidget {
   const ListInfo({
     Key? key,
     required this.title,
-    required this.content,
+    this.content,
     this.hasDivider,
     this.titleStyle,
     this.contentWidget,
@@ -17,7 +17,7 @@ class ListInfo extends StatelessWidget {
   }) : super(key: key);
 
   final String title;
-  final String content;
+  final String? content;
   final bool? hasDivider;
   final TextStyle? titleStyle;
   final Widget? contentWidget;
@@ -63,15 +63,17 @@ class ListInfo extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     child: contentWidget!,
                   )
-                : Text(
-                    content,
-                    textAlign: TextAlign.right,
-                    style: contentStyle ??
-                        const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
+                : content != null
+                    ? Text(
+                        content!,
+                        textAlign: TextAlign.right,
+                        style: contentStyle ??
+                            const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                      )
+                    : const SizedBox.shrink(),
           ),
         ],
       ),
