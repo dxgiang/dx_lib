@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router_example/go_router/go_route.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  //Remove this method to stop OneSignal Debugging
+  OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+
+  OneSignal.shared.setAppId("a96962ef-88fe-4d34-baef-8f79085ede4f");
+
+// The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+  OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+    print("Accepted permission: $accepted");
+  });
+
   runApp(
     ScreenUtilInit(
       designSize: const Size(375, 812),
@@ -11,9 +24,6 @@ void main() {
       builder: (context, _) => MaterialApp.router(
         debugShowCheckedModeBanner: false,
         routerConfig: goRouter,
-        
-        // routeInformationParser: goRouter.routeInformationParser,
-        // routerDelegate: goRouter.routerDelegate,
         // navigatorObservers: [RouterObserver()],
       ),
     ),
