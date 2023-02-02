@@ -32,7 +32,7 @@ class _MyActivityWidgetState extends State<MyActivityWidget>
               onTap: () {
                 context.pushNamed(
                   RoutePaths.detailActivity,
-                  params: {'activityName': 'Activity at index $index'},
+                  params: {'activityName': '$index'},
                 );
               },
               child: Container(

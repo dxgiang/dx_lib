@@ -49,6 +49,20 @@ class SettingWidget extends StatelessWidget {
                     );
                   },
                 ),
+                TextButton(
+                  child: const Text(
+                    'Comments',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () {
+                    context.goNamed(
+                      RoutePaths.comments,
+                      params: {
+                        "id": "1"
+                      },
+                    );
+                  },
+                )
               ],
             ),
             SizedBox(height: kPadding24 * 2),

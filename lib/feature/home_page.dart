@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_router_example/common/constant.dart';
 import 'package:go_router_example/feature/setting/user/user_detail_info.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:uni_links/uni_links.dart';
 
 import '../go_router/route_paths.dart';
@@ -31,12 +33,67 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     super.initState();
     _handleIncomingLinks();
     _handleInitialUri();
+    oneSignalHandler();
   }
 
   @override
   void dispose() {
     _sub?.cancel();
     super.dispose();
+  }
+
+  void handleData(String additionalData, String key) {
+    switch (key) {
+      case "userDetailInfo":
+        navigateToUserDetailPage();
+        break;
+      case "detailActivity":
+        navigateToUserDetailPage();
+        break;
+      default:
+        break;
+    }
+  }
+
+  void oneSignalHandler() {
+    OneSignal.shared.setNotificationOpenedHandler(
+      (openedResult) {
+        if (openedResult.notification.additionalData != null) {
+          final additionalData = openedResult.notification.additionalData!;
+          String userDetail = additionalData["user"].toString();
+          // additionalData.forEach((key, value) {
+          //   handleData(key, value);
+          // });
+          String? path1 = _splitURL(userDetail.toString());
+          if (path1 == null) return;
+          log(path1);
+          if (path1 == '1') {
+            context.goNamed(
+              "/comments",
+              params: {"id": "1"},
+            );
+          }
+        }
+      },
+    );
+  }
+
+  String? _splitURL(String? routePath) {
+    if (routePath == null) {
+      return null;
+    }
+    List<String> parts = routePath.split("/");
+    parts.removeAt(0);
+    return parts.join();
+  }
+
+  String? splitMapJoin(String? routePaths) {
+    if (routePaths == null) return null;
+    List<String> parts = routePaths.split("/");
+    parts.removeAt(0);
+    List<String> output =
+        parts.takeWhile((part) => !part.contains("://")).toList();
+    return output.join();
   }
 
   /// Handle incoming links - the ones that the app will receive from the OS
@@ -49,10 +106,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         if (!mounted) return;
         print('got uri: $uri');
         if (uri != null) {
-          String path = uri.toString().split('/').last;
-          print(path);
-          if (path == 'myactivity') {
-            context.pushNamed(RoutePaths.myActivity); 
+          // String path = uri.toString().split('/').last;
+          String? path1 = _splitURL(uri.toString());
+          if (path1 == null) return;
+          log(path1);
+          if (path1 == 'settingsAlexuserDetailInfo') {
+            // context.pushNamed(RoutePaths.settings, params: {'name': 'Alex'});
+            navigateToUserDetailPage();
           }
         }
         setState(() {
@@ -153,17 +213,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.cyan),
                   onPressed: () {
-                    UserModel model = UserModel(
-                      age: '22',
-                      email: 'youremail@gmail.com',
-                      address: 'Ho Chi Minh City',
-                      userName: 'Alex',
-                    );
-                    context.goNamed(
-                      RoutePaths.userDetailInfo,
-                      params: {'name': 'Alex'},
-                      extra: model,
-                    );
+                    navigateToUserDetailPage();
                   },
                   child: const Text(
                     'Go to Detail with goNamed',
@@ -179,17 +229,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.amber),
                   onPressed: () {
-                    UserModel model = UserModel(
-                      age: '22',
-                      email: 'youremail@gmail.com',
-                      address: 'Ho Chi Minh City',
-                      userName: 'Alex',
-                    );
-                    context.pushNamed(
-                      RoutePaths.userDetailInfo,
-                      params: {'name': 'Alex'},
-                      extra: model,
-                    );
+                    navigateToUserDetailPage(goNamed: false);
                   },
                   child: const Text(
                     'Go to Detail with pushNamed',
@@ -202,6 +242,29 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         ),
       ),
     );
+  }
+
+  void navigateToUserDetailPage({bool goNamed = true}) {
+    UserModel model = UserModel(
+      age: '22',
+      email: 'youremail@gmail.com',
+      address: 'Ho Chi Minh City',
+      userName: 'Alex',
+    );
+    print(goNamed);
+    if (!goNamed) {
+      context.pushNamed(
+        RoutePaths.userDetailInfo,
+        params: {'name': 'Alex'},
+        extra: model,
+      );
+    } else {
+      context.goNamed(
+        RoutePaths.userDetailInfo,
+        params: {'name': 'Alex'},
+        extra: model,
+      );
+    }
   }
 }
 

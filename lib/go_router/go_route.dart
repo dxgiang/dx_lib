@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:go_router_example/feature/comments/comments_page.dart';
 import 'package:go_router_example/feature/error_screen/error_screen.dart';
 import 'package:go_router_example/feature/home_page.dart';
 import 'package:go_router_example/feature/my_activity/detail_activity/detail_activity_page.dart';
@@ -25,6 +26,13 @@ final goRouter = GoRouter(
       path: '/',
       builder: (context, state) => const HomePageWidget(),
       routes: [
+        GoRoute(
+          name: RoutePaths.comments,
+          path: 'comments/:id',
+          builder: (context, state) {
+            return CommentsPage(id: state.params["id"].toString());
+          },
+        ),
         GoRoute(
           name: RoutePaths.settings,
           path: 'settings/:name',
